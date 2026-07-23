@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MCAMX社团 · 我的世界校园还原</title>
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* ===== 全局重置 & 字体 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --mc-green: #4c8b3c;
+            --mc-dark: #1e2b1a;
+            --mc-gold: #d4a017;
+            --mc-white: #f0f0f0;
+            --shadow-pixel: 4px 4px 0 rgba(0, 0, 0, 0.3);
+            --font-pixel: 'Courier New', monospace;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, 'Helvetica Neue', sans-serif;
+            background: #0f1a0d;
+            color: #e8e8e8;
+            line-height: 1.6;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* ===== 动态深绿方格背景 ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(40, 80, 30, 0.6) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(40, 80, 30, 0.6) 1px, transparent 1px);
+            background-size: 60px 60px;
+            background-position: 0 0;
+            animation: moveGrid 12s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes moveGrid {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 60px 60px;
+            }
+        }
+
+        /* 所有内容放在上层 */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== 像素风格辅助 ===== */
+        .pixel-border {
+            border: 3px solid #2d3d2a;
+            box-shadow: var(--shadow-pixel);
+            image-rendering: pixelated;
+        }
+
+        .pixel-text {
+            font-family: var(--font-pixel);
+            letter-spacing: 1px;
+        }
+
+        /* ===== 滚动条 ===== */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f1a0d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--mc-green);
+            border: 2px solid #1e2b1a;
+            border-radius: 0;
+        }
+
+        /* ===== 导航栏 ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 999;
+            background: rgba(15, 26, 13, 0.94);
+            backdrop-filter: blur(6px);
+            border-bottom: 3px solid var(--mc-green);
+            padding: 0.6rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            transition: background 0.3s;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--mc-white);
+            text-decoration: none;
+        }
+
+        .navbar .logo i {
+            color: var(--mc-gold);
+            font-size: 2rem;
+            filter: drop-shadow(0 0 6px rgba(212, 160, 23, 0.4));
+        }
+
+        .navbar .logo span {
+            background: linear-gradient(135deg, #7cc76a, #3d7a33);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            font-family: var(--font-pixel);
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.8rem;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #ccc;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            padding: 0.3rem 0.2rem;
+            border-bottom: 2px solid transparent;
+            transition: 0.25s;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links a:hover {
+            color: var(--mc-green);
+            border-bottom-color: var(--mc-green);
+        }
+
+        .nav-links a i {
+            margin-right: 6px;
+        }
+
+        .hamburger {
+            display: none;
+            font-size: 1.8rem;
+            color: #ccc;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* ===== Hero 区域 ===== */
+        .hero {
+            margin-top: 72px;
+            min-height: 88vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            position: relative;
+            border-bottom: 6px solid var(--mc-green);
+        }
+
+        .hero-content {
+            max-width: 880px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-content .badge {
+            display: inline-block;
+            background: var(--mc-dark);
+            padding: 0.3rem 1.2rem;
+            border: 2px solid var(--mc-green);
+            font-family: var(--font-pixel);
+            font-size: 0.85rem;
+            color: var(--mc-green);
+            letter-spacing: 2px;
+            margin-bottom: 1.2rem;
+            box-shadow: var(--shadow-pixel);
+        }
+
+        /* ===== 代码输入效果标题 ===== */
+        .hero-content .title-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-content h1 {
+            font-size: 4.2rem;
+            font-weight: 800;
+            line-height: 1.2;
+            font-family: var(--font-pixel);
+            background: linear-gradient(135deg, #f0f0f0 0%, #a8d6a0 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            filter: drop-shadow(0 4px 12px rgba(76, 139, 60, 0.3));
+            letter-spacing: 4px;
+            position: relative;
+            display: inline-block;
+        }
+
+        /* 光标闪烁 */
+        .hero-content h1::after {
+            content: '|';
+            -webkit-text-fill-color: initial;
+            color: var(--mc-green);
+            font-weight: 400;
+            animation: blink 0.7s step-end infinite;
+            margin-left: 2px;
+            display: inline-block;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* 当输入完成后隐藏光标（由JS控制） */
+        .hero-content h1.done::after {
+            opacity: 0;
+            animation: none;
+        }
+
+        .hero-content h1 i {
+            -webkit-text-fill-color: initial;
+            color: var(--mc-gold);
+            filter: drop-shadow(0 0 10px rgba(212, 160, 23, 0.3));
+            margin-right: 6px;
+        }
+
+        .hero-content .subtitle {
+            font-size: 1.3rem;
+            color: #b8b8b8;
+            margin: 0.8rem 0 1.8rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .hero-content .subtitle strong {
+            color: var(--mc-green);
+            font-weight: 600;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.85rem 2.4rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 2px solid transparent;
+            transition: 0.25s;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-pixel);
+            letter-spacing: 0.5px;
+            background: var(--mc-dark);
+            color: #eee;
+            border-color: #3a4a37;
+        }
+
+        .btn-primary {
+            background: var(--mc-green);
+            color: #111;
+            border-color: var(--mc-green);
+            box-shadow: 0 4px 0 #1e3a17;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1e3a17;
+            background: #5caa4a;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border-color: var(--mc-green);
+            color: var(--mc-green);
+        }
+
+        .btn-outline:hover {
+            background: var(--mc-green);
+            color: #111;
+        }
+
+        /* ===== 通用 section ===== */
+        section {
+            padding: 4.5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.6rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: -0.5px;
+            font-family: var(--font-pixel);
+        }
+
+        .section-title i {
+            color: var(--mc-gold);
+            margin-right: 10px;
+        }
+
+        .section-sub {
+            text-align: center;
+            color: #aaa;
+            max-width: 640px;
+            margin: 0 auto 3.5rem;
+            font-size: 1.1rem;
+            border-left: 4px solid var(--mc-green);
+            padding-left: 1.2rem;
+        }
+
+        .section-sub strong {
+            color: #ddd;
+        }
+
+        /* ===== 关于我们 ===== */
+        #about {
+            background: rgba(20, 30, 18, 0.85);
+            border-top: 3px solid #2d3d2a;
+            border-bottom: 3px solid #2d3d2a;
+            backdrop-filter: blur(2px);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .about-text p {
+            margin-bottom: 1.2rem;
+            color: #d0d0d0;
+            font-size: 1.05rem;
+        }
+
+        .about-text p i {
+            color: var(--mc-green);
+            width: 1.8rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .stat-card {
+            background: rgba(30, 43, 26, 0.8);
+            padding: 1.6rem 1rem;
+            text-align: center;
+            border: 2px solid #2d3d2a;
+            box-shadow: var(--shadow-pixel);
+            transition: 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--mc-green);
+            transform: scale(1.02);
+        }
+
+        .stat-card .number {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: var(--mc-gold);
+            font-family: var(--font-pixel);
+            display: block;
+        }
+
+        .stat-card .label {
+            color: #bbb;
+            font-size: 0.95rem;
+            margin-top: 0.2rem;
+        }
+
+        /* ===== 项目展示 ===== */
+        #projects {
+            background: rgba(15, 26, 13, 0.7);
+            backdrop-filter: blur(2px);
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: rgba(30, 43, 26, 0.85);
+            border: 3px solid #2d3d2a;
+            box-shadow: var(--shadow-pixel);
+            overflow: hidden;
+            transition: 0.25s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--mc-green);
+        }
+
+        .project-img {
+            height: 170px;
+            background: #142011;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3.6rem;
+            color: var(--mc-green);
+            border-bottom: 3px solid #2d3d2a;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-img .pixel-overlay {
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.15) 0px,
+                    rgba(0, 0, 0, 0.15) 4px,
+                    transparent 4px,
+                    transparent 8px);
+            pointer-events: none;
+        }
+
+        .project-img i {
+            filter: drop-shadow(0 0 20px rgba(76, 139, 60, 0.25));
+            z-index: 1;
+        }
+
+        .project-body {
+            padding: 1.4rem 1.6rem 1.8rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .project-body h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: #eee;
+        }
+
+        .project-body h3 i {
+            color: var(--mc-gold);
+            margin-right: 6px;
+            font-size: 0.9rem;
+        }
+
+        .project-body p {
+            color: #b0b0b0;
+            font-size: 0.95rem;
+            flex: 1;
+            margin-bottom: 0.8rem;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.4rem;
+        }
+
+        .project-tags span {
+            background: #1a2a17;
+            border: 1px solid #2d3d2a;
+            padding: 0.15rem 0.8rem;
+            font-size: 0.7rem;
+            font-family: var(--font-pixel);
+            color: #aaa;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== 成员 ===== */
+        #members {
+            background: rgba(20, 30, 18, 0.85);
+            border-top: 3px solid #2d3d2a;
+            border-bottom: 3px solid #2d3d2a;
+            backdrop-filter: blur(2px);
+        }
+
+        .members-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            justify-items: center;
+        }
+
+        .member-card {
+            background: rgba(30, 43, 26, 0.8);
+            border: 3px solid #2d3d2a;
+            box-shadow: var(--shadow-pixel);
+            padding: 1.8rem 1.2rem 1.6rem;
+            text-align: center;
+            width: 100%;
+            max-width: 220px;
+            transition: 0.2s;
+        }
+
+        .member-card:hover {
+            border-color: var(--mc-green);
+            transform: scale(1.03);
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 0;
+            background: #142011;
+            border: 3px solid #3a4a37;
+            margin: 0 auto 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            color: var(--mc-green);
+            box-shadow: var(--shadow-pixel);
+        }
+
+        .member-card h4 {
+            font-size: 1.1rem;
+            color: #eee;
+        }
+
+        .member-card .role {
+            font-size: 0.8rem;
+            color: var(--mc-gold);
+            font-family: var(--font-pixel);
+            letter-spacing: 0.5px;
+            background: #1a2a17;
+            display: inline-block;
+            padding: 0.1rem 0.8rem;
+            margin-top: 0.2rem;
+            border: 1px solid #2d3d2a;
+        }
+
+        /* ===== 加入我们 ===== */
+        #join {
+            background: rgba(15, 26, 13, 0.7);
+            backdrop-filter: blur(2px);
+        }
+
+        .join-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            background: rgba(30, 43, 26, 0.8);
+            border: 3px solid #2d3d2a;
+            box-shadow: var(--shadow-pixel);
+            padding: 2.8rem 3rem;
+        }
+
+        .join-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: #eee;
+        }
+
+        .join-info h3 i {
+            color: var(--mc-gold);
+        }
+
+        .join-info p {
+            color: #c0c0c0;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .join-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .join-info ul li {
+            padding: 0.4rem 0;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .join-info ul li i {
+            color: var(--mc-green);
+            width: 1.4rem;
+            font-size: 1.1rem;
+        }
+
+        .join-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .join-form input,
+        .join-form textarea {
+            background: #142011;
+            border: 2px solid #2d3d2a;
+            padding: 0.8rem 1.2rem;
+            font-size: 1rem;
+            color: #eee;
+            font-family: inherit;
+            outline: none;
+            transition: 0.2s;
+            box-shadow: var(--shadow-pixel);
+            width: 100%;
+        }
+
+        .join-form input:focus,
+        .join-form textarea:focus {
+            border-color: var(--mc-green);
+        }
+
+        .join-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .join-form .btn {
+            align-self: flex-start;
+            border: none;
+            padding: 0.8rem 2.8rem;
+        }
+
+        /* ===== 页脚 ===== */
+        footer {
+            border-top: 3px solid var(--mc-green);
+            background: rgba(10, 18, 8, 0.95);
+            padding: 2.5rem 2rem 1.8rem;
+            text-align: center;
+            color: #888;
+        }
+
+        footer .socials {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 1.6rem;
+            margin-bottom: 1.2rem;
+        }
+
+        footer .socials a {
+            color: #666;
+            transition: 0.2s;
+        }
+
+        footer .socials a:hover {
+            color: var(--mc-green);
+            transform: translateY(-3px);
+        }
+
+        footer .footer-text {
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        footer .footer-text i {
+            color: var(--mc-gold);
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 820px) {
+            .navbar {
+                padding: 0.6rem 1.2rem;
+            }
+
+            .nav-links {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.6rem;
+                padding: 1rem 0 0.4rem;
+                border-top: 2px solid #2d3d2a;
+                margin-top: 0.6rem;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero-content h1 {
+                font-size: 2.8rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .join-wrapper {
+                grid-template-columns: 1fr;
+                padding: 2rem 1.2rem;
+            }
+
+            .join-form .btn {
+                align-self: stretch;
+                text-align: center;
+            }
+
+            section {
+                padding: 3rem 1.2rem;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+                letter-spacing: 2px;
+            }
+
+            .hero-content .subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .stat-card .number {
+                font-size: 2rem;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .members-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="content-wrapper">
+
+        <!-- ========== 导航栏 ========== -->
+        <nav class="navbar" id="navbar">
+            <a href="#" class="logo">
+                <i class="fas fa-cube"></i>
+                <span>MCAMX</span>
+            </a>
+
+            <button class="hamburger" id="hamburger" aria-label="菜单">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about"><i class="fas fa-info-circle"></i> 关于</a></li>
+                <li><a href="#projects"><i class="fas fa-building"></i> 项目</a></li>
+                <li><a href="#members"><i class="fas fa-users"></i> 成员</a></li>
+                <li><a href="#join"><i class="fas fa-hand-peace"></i> 加入</a></li>
+            </ul>
+        </nav>
+
+        <!-- ========== Hero ========== -->
+        <header class="hero" id="home">
+            <div class="hero-content">
+                <div class="badge">
+                    <i class="fas fa-gamepad"></i>  ·  2025 全新企划
+                </div>
+                <div class="title-wrapper">
+                    <h1 id="typingTitle">
+                        <i class="fas fa-cube"></i> MCAMX
+                    </h1>
+                </div>
+                <p class="subtitle">
+                    在 <strong>我的世界</strong> 中 1:1 还原校园 · 用方块致敬青春
+                </p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i> 查看项目
+                    </a>
+                    <a href="#join" class="btn btn-outline">
+                        <i class="fas fa-user-plus"></i> 加入社团
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- ========== 关于我们 ========== -->
+        <section id="about">
+            <h2 class="section-title"><i class="fas fa-pencil-ruler"></i> 关于 MCAMX</h2>
+            <p class="section-sub">
+                一群热爱 <strong>Minecraft</strong> 与 <strong>校园文化</strong> 的玩家，
+                用像素方块复刻青春记忆。
+            </p>
+
+            <div class="about-grid">
+                <div class="about-text">
+                    <p>
+                        <i class="fas fa-graduation-cap"></i> <strong>MCAMX</strong> 成立于 2025 年，
+                        是一个以《我的世界》为载体的校园还原社团。我们致力于用 1:1 比例
+                        还原真实校园建筑、景观与人文氛围。
+                    </p>
+                    <p>
+                        <i class="fas fa-cubes"></i> 从教学楼、图书馆到操场、食堂，
+                        每一块砖瓦都凝聚着我们对校园生活的热爱与回忆。
+                        我们相信，方块不只是游戏，更是情感的载体。
+                    </p>
+                    <p>
+                        <i class="fas fa-flag"></i> 社团定期举办 <strong>建筑工坊</strong>、
+                        <strong>校园导览直播</strong> 和 <strong>还原挑战赛</strong>，
+                        欢迎所有对建筑、设计、MC 感兴趣的伙伴加入！
+                    </p>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <span class="number">5</span>
+                        <span class="label">还原建筑</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="number">1</span>
+                        <span class="label">校园地图</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="number">20+</span>
+                        <span class="label">社团成员</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="number">200+</span>
+                        <span class="label">小时建造</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 项目展示 ========== -->
+        <section id="projects">
+            <h2 class="section-title"><i class="fas fa-map-marked-alt"></i> 校园还原 · 项目</h2>
+            <p class="section-sub">
+                每一栋建筑都承载着故事，我们用方块讲述属于我们的 <strong>校园志</strong>。
+            </p>
+
+            <div class="projects-grid">
+                <!-- 项目 1 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-university"></i>
+                        <div class="pixel-overlay"></div>
+                    </div>
+                    <div class="project-body">
+                        <h3><i class="fas fa-school"></i> 主教学楼</h3>
+                        <p>5 层高，包含 18 间教室、办公室及连廊。外立面采用玻璃与混凝土，现代简约风格。</p>
+                        <div class="project-tags">
+                            <span>建筑</span>
+                            <span>1:1</span>
+                            <span>2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目 2 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-book-open"></i>
+                        <div class="pixel-overlay"></div>
+                    </div>
+                    <div class="project-body">
+                        <h3><i class="fas fa-book"></i> 图书馆 · 书山</h3>
+                        <p>采用雕纹书架还原真实藏书效果，设有电脑区供师生查阅资料，安静学习空间。</p>
+                        <div class="project-tags">
+                            <span>文化</span>
+                            <span>雕纹书架</span>
+                            <span>2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目 3 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-futbol"></i>
+                        <div class="pixel-overlay"></div>
+                    </div>
+                    <div class="project-body">
+                        <h3><i class="fas fa-running"></i> 体育场 · 绿茵</h3>
+                        <p>标准 400 米跑道 + 足球场，无观众席设计，专注运动本身。夜晚灯光系统全开。</p>
+                        <div class="project-tags">
+                            <span>运动</span>
+                            <span>红石</span>
+                            <span>2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目 4 -->
+                <div class="project-card">
+                    <div class="project-img">
+                        <i class="fas fa-utensils"></i>
+                        <div class="pixel-overlay"></div>
+                    </div>
+                    <div class="project-body">
+                        <h3><i class="fas fa-bread"></i> 食堂 · 饱食</h3>
+                        <p>一层楼设计，设有 3 个档口、自动售货机。还原真实校园的「下课抢饭」场景。</p>
+                        <div class="project-tags">
+                            <span>生活</span>
+                            <span>互动</span>
+                            <span>2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 社团成员 ========== -->
+        <section id="members">
+            <h2 class="section-title"><i class="fas fa-user-astronaut"></i> 核心成员</h2>
+            <p class="section-sub">
+                一群 <strong>有情怀</strong> 的建筑师、红石工程师与校园文化爱好者。
+            </p>
+
+            <div class="members-grid">
+                <div class="member-card">
+                    <div class="member-avatar"><i class="fas fa-hard-hat"></i></div>
+                    <h4>Eason20000</h4>
+                    <span class="role">社长</span>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar"><i class="fas fa-code"></i></div>
+                    <h4>XiaoXiao</h4>
+                    <span class="role">副社长</span>
+                </div>
+
+                <div class="member-card">
+                    <div class="member-avatar"><i class="fas fa-paint-brush"></i></div>
+                    <h4>Liuma</h4>
+                    <span class="role">建造总监</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 加入我们 ========== -->
+        <section id="join">
+            <h2 class="section-title"><i class="fas fa-hand-peace"></i> 加入 MCAMX</h2>
+            <p class="section-sub">
+                无论你是 <strong>建筑大佬</strong>、<strong>红石狂人</strong> 还是 <strong>校园文化爱好者</strong>，
+                这里都有你的位置。
+            </p>
+
+            <div class="join-wrapper">
+                <div class="join-info">
+                    <h3><i class="fas fa-cube"></i> 一起建造 · 一起回忆</h3>
+                    <p>
+                        我们定期举行集体建造活动，不定期举办校园导览直播和建筑比赛。
+                        加入我们，你将会获得：
+                    </p>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> 校园建筑项目实战经验</li>
+                        <li><i class="fas fa-check-circle"></i> 与优秀建筑师交流学习</li>
+                        <li><i class="fas fa-check-circle"></i> 作品在社团平台展示</li>
+                        <li><i class="fas fa-check-circle"></i> 专属社团皮肤 & 称号</li>
+                    </ul>
+                    <p style="margin-top: 1.2rem; color: #aaa; font-size: 0.95rem;">
+                        <i class="fas fa-envelope"></i> 联系邮箱：<strong style="color: #ddd;">summeralway@163.com</strong>
+                    </p>
+                </div>
+
+                <div class="join-form">
+                    <input type="text" placeholder="你的名字 / 游戏ID" />
+                    <input type="email" placeholder="邮箱地址" />
+                    <textarea placeholder="简单介绍一下你自己，以及你想在社团做什么……"></textarea>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> 提交申请
+                    </button>
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.2rem;">
+                        <i class="fas fa-lock"></i> 我们会保护你的隐私，仅用于社团联系。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== 页脚 ========== -->
+        <footer>
+            <div class="socials">
+                <a href="https://space.bilibili.com/1336622008?spm_id_from=333.337.0.0" target="_blank" aria-label="Bilibili">
+                    <i class="fab fa-bilibili"></i>
+                </a>
+            </div>
+            <div class="footer-text">
+                <i class="fas fa-cube"></i> MCAMX · 用方块还原校园 · 2025
+                <br />
+                <span style="font-size: 0.8rem; color: #555;">
+                    Made by SummerAlway
+                </span>
+            </div>
+        </footer>
+
+    </div><!-- end content-wrapper -->
+
+    <!-- ========== JavaScript ========== -->
+    <script>
+        // ===== 代码输入效果 =====
+        (function() {
+            const titleEl = document.getElementById('typingTitle');
+            // 原始文本：图标 + MCAMX（注意图标是 <i> 标签，需要保留）
+            // 我们重新构造：先取出图标部分，再处理文字
+            const iconHTML = '<i class="fas fa-cube"></i> ';
+            const textToType = 'MCAMX';
+            let currentIndex = 0;
+            let isDone = false;
+
+            // 清空标题，只保留图标占位，然后逐字追加
+            // 但为了保留图标，我们先把图标放在前面，然后追加文字
+            // 初始内容：图标 + 空字符串
+            titleEl.innerHTML = iconHTML;
+
+            function typeNextChar() {
+                if (currentIndex < textToType.length) {
+                    // 追加下一个字符
+                    titleEl.innerHTML = iconHTML + textToType.substring(0, currentIndex + 1);
+                    currentIndex++;
+                    setTimeout(typeNextChar, 180); // 每个字符间隔180ms
+                } else {
+                    // 输入完成，添加 done 类隐藏光标
+                    titleEl.classList.add('done');
+                    isDone = true;
+                }
+            }
+
+            // 延迟一点开始，让页面加载更自然
+            setTimeout(typeNextChar, 400);
+        })();
+
+        // ===== 移动端汉堡菜单 =====
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            const icon = hamburger.querySelector('i');
+            if (navLinks.classList.contains('open')) {
+                icon.className = 'fas fa-times';
+            } else {
+                icon.className = 'fas fa-bars';
+            }
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                const icon = hamburger.querySelector('i');
+                icon.className = 'fas fa-bars';
+            });
+        });
+
+        // ===== 滚动时导航栏效果 =====
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 60) {
+                navbar.style.background = 'rgba(10, 18, 8, 0.96)';
+                navbar.style.boxShadow = '0 4px 20px rgba(0,0,0,0.7)';
+            } else {
+                navbar.style.background = 'rgba(15, 26, 13, 0.94)';
+                navbar.style.boxShadow = 'none';
+            }
+        });
+
+        // ===== 表单提交演示 =====
+        const submitBtn = document.querySelector('.join-form .btn');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const inputs = document.querySelectorAll('.join-form input, .join-form textarea');
+                let allFilled = true;
+                inputs.forEach(inp => {
+                    if (inp.value.trim() === '') allFilled = false;
+                });
+                if (allFilled) {
+                    alert('🎉 感谢你的申请！MCAMX 社团会尽快与你联系。\n（演示交互，实际请对接后端）');
+                } else {
+                    alert('🧱 请填写所有字段，让我们更好地认识你！');
+                }
+            });
+        }
+
+        console.log('🏫 MCAMX 社团 · 用方块还原校园');
+        console.log('💚 欢迎加入我们！');
+    </script>
+
+</body>
+</html>
